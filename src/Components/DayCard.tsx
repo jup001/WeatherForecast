@@ -3,6 +3,21 @@ import { Cloud, WbSunny, Thunderstorm } from '@mui/icons-material';
 import Rain from '@mui/icons-material/AcUnitRounded';
 import Snow from '@mui/icons-material/ThunderstormRounded';
 
+interface ForecastItem {
+    dt_txt: string;
+    main: {
+        temp: number;
+    };
+    weather: {
+        description: string;
+        icon: string;
+    }[];
+}
+
+interface DayCardProps {
+    index: number;
+    day: ForecastItem;
+}
 
 const getWeatherIcon = (description: string) => {
     switch (description.toLowerCase()) {
@@ -23,7 +38,6 @@ const getWeatherIcon = (description: string) => {
     }
 };
 
-
 const getWeatherColor = (description: string) => {
     switch (description.toLowerCase()) {
         case 'clear sky':
@@ -43,16 +57,15 @@ const getWeatherColor = (description: string) => {
     }
 };
 
-
-const formatDate = (timestamp: number) => {
-    const date = new Date(timestamp * 1000);
+const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
     const dayOfMonth = date.getDate();
     const options: Intl.DateTimeFormatOptions = { weekday: 'long' };
     const dayOfWeek = new Intl.DateTimeFormat('en-US', options).format(date);
     return `${dayOfMonth} ${dayOfWeek}`;
 };
 
-function DayCard({ index, day }: any) {
+function DayCard({ index, day }: DayCardProps) {
     const weatherDescription = day.weather[0].description;
     const weatherColor = getWeatherColor(weatherDescription);
 
@@ -80,7 +93,7 @@ function DayCard({ index, day }: any) {
                     }}
                 >
                     <Typography variant="body1" sx={{ marginBottom: 1 }}>
-                        {formatDate(day.dt)}
+                        {formatDate(day.dt_txt)}
                     </Typography>
                     <Divider sx={{ marginBottom: 2, width: '100%' }} />
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
